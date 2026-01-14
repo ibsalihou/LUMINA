@@ -12,7 +12,7 @@ const BrandConsultant: React.FC = () => {
   const handleConsult = async () => {
     if (!description.trim()) return;
     setLoading(true);
-    setSuggestions([]); // Réinitialiser pour une nouvelle recherche principale
+    setSuggestions([]); 
     try {
       const result = await generateBrandDirection(description);
       setSuggestions(result);
@@ -28,13 +28,20 @@ const BrandConsultant: React.FC = () => {
     setMoreLoading(true);
     try {
       const result = await generateBrandDirection(description);
-      // On ajoute les nouvelles suggestions à la liste existante
       setSuggestions(prev => [...prev, ...result]);
     } catch (err) {
       console.error(err);
     } finally {
       setMoreLoading(false);
     }
+  };
+
+  // Fonction utilitaire pour mapper le texte de l'IA à une classe de police
+  const getTypographyClass = (style: string) => {
+    const s = style.toLowerCase();
+    if (s.includes('serif') || s.includes('classique') || s.includes('élégant')) return 'font-display';
+    if (s.includes('mono') || s.includes('technique') || s.includes('code')) return 'font-mono';
+    return 'font-sans'; // Par défaut
   };
 
   return (
@@ -74,20 +81,26 @@ const BrandConsultant: React.FC = () => {
             <div className="space-y-12">
               <div className="grid md:grid-cols-2 gap-8 animate-fadeIn">
                 {suggestions.map((s, idx) => (
-                  <div key={idx} className="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/10 flex flex-col h-full">
+                  <div key={idx} className="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/10 flex flex-col h-full hover:bg-white/15 transition-colors">
                     <h3 className="text-xl font-bold text-indigo-300 mb-2 uppercase tracking-widest">{s.mood}</h3>
                     <div className="flex gap-2 mb-4">
                       {s.colorPalette.map((color, cIdx) => (
                         <div 
                           key={cIdx} 
                           title={color}
-                          className="w-8 h-8 rounded-full border border-white/20" 
+                          className="w-8 h-8 rounded-full border border-white/20 shadow-sm" 
                           style={{ backgroundColor: color }}
                         />
                       ))}
                     </div>
-                    <p className="text-sm font-medium mb-4 italic text-white/80">Typographie : {s.typographyStyle}</p>
-                    <p className="text-indigo-100 text-sm leading-relaxed flex-grow">{s.rationale}</p>
+                    {/* Typographie avec style dynamique appliqué */}
+                    <div className="mb-4">
+                      <p className="text-[10px] text-indigo-300 uppercase tracking-[0.2em] font-bold mb-1">Style Typographique :</p>
+                      <p className={`text-xl text-white ${getTypographyClass(s.typographyStyle)}`}>
+                        {s.typographyStyle}
+                      </p>
+                    </div>
+                    <p className="text-indigo-100 text-sm leading-relaxed flex-grow border-t border-white/10 pt-4">{s.rationale}</p>
                   </div>
                 ))}
               </div>
