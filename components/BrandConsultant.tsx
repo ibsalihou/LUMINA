@@ -36,12 +36,18 @@ const BrandConsultant: React.FC = () => {
     }
   };
 
-  // Fonction utilitaire pour mapper le texte de l'IA à une classe de police
+  /**
+   * Analyse le texte suggéré pour retourner la classe CSS de police appropriée
+   */
   const getTypographyClass = (style: string) => {
     const s = style.toLowerCase();
-    if (s.includes('serif') || s.includes('classique') || s.includes('élégant')) return 'font-display';
-    if (s.includes('mono') || s.includes('technique') || s.includes('code')) return 'font-mono';
-    return 'font-sans'; // Par défaut
+    if (s.includes('serif') || s.includes('classique') || s.includes('luxe') || s.includes('élégant')) {
+      return 'font-display italic';
+    }
+    if (s.includes('mono') || s.includes('technique') || s.includes('code') || s.includes('moderne')) {
+      return 'font-mono font-bold tracking-tight';
+    }
+    return 'font-sans font-extrabold tracking-tighter uppercase'; // Par défaut pour le Sans-serif
   };
 
   return (
@@ -81,26 +87,34 @@ const BrandConsultant: React.FC = () => {
             <div className="space-y-12">
               <div className="grid md:grid-cols-2 gap-8 animate-fadeIn">
                 {suggestions.map((s, idx) => (
-                  <div key={idx} className="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/10 flex flex-col h-full hover:bg-white/15 transition-colors">
+                  <div key={idx} className="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/10 flex flex-col h-full hover:bg-white/15 transition-all duration-500 transform hover:-translate-y-1">
                     <h3 className="text-xl font-bold text-indigo-300 mb-2 uppercase tracking-widest">{s.mood}</h3>
-                    <div className="flex gap-2 mb-4">
+                    
+                    <div className="flex gap-2 mb-6">
                       {s.colorPalette.map((color, cIdx) => (
                         <div 
                           key={cIdx} 
                           title={color}
-                          className="w-8 h-8 rounded-full border border-white/20 shadow-sm" 
+                          className="w-10 h-10 rounded-full border border-white/20 shadow-inner group relative" 
                           style={{ backgroundColor: color }}
-                        />
+                        >
+                           <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity bg-black/50 px-2 py-1 rounded">
+                             {color}
+                           </span>
+                        </div>
                       ))}
                     </div>
-                    {/* Typographie avec style dynamique appliqué */}
-                    <div className="mb-4">
-                      <p className="text-[10px] text-indigo-300 uppercase tracking-[0.2em] font-bold mb-1">Style Typographique :</p>
-                      <p className={`text-xl text-white ${getTypographyClass(s.typographyStyle)}`}>
+
+                    <div className="mb-6 bg-black/20 p-4 rounded-2xl border border-white/5">
+                      <p className="text-[10px] text-indigo-300 uppercase tracking-[0.2em] font-bold mb-3 opacity-70">Aperçu Typographique :</p>
+                      <p className={`text-2xl leading-none text-white break-words ${getTypographyClass(s.typographyStyle)}`}>
                         {s.typographyStyle}
                       </p>
                     </div>
-                    <p className="text-indigo-100 text-sm leading-relaxed flex-grow border-t border-white/10 pt-4">{s.rationale}</p>
+
+                    <p className="text-indigo-100 text-sm leading-relaxed flex-grow border-t border-white/10 pt-4 italic">
+                      {s.rationale}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -117,12 +131,12 @@ const BrandConsultant: React.FC = () => {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
-                      Génération en cours...
+                      Exploration...
                     </span>
                   ) : (
                     <>
-                      <span>Générer d'autres options</span>
-                      <span className="text-xl transform group-hover:rotate-12 transition-transform">+</span>
+                      <span>Générer d'autres concepts</span>
+                      <span className="text-xl transform group-hover:rotate-90 transition-transform">+</span>
                     </>
                   )}
                 </button>
